@@ -1,0 +1,45 @@
+class CountdownTimer:
+    def __init__(self):
+        self.running = False
+        self.time_left = 0
+
+    #define the stop function
+    def stop_timer(self):
+        self.running = False
+    
+    #Define the phrase time
+    def parse_time(self, time_str):
+        try:
+            h, m, s = map(int, time_str.split(":"))
+            return h * 3600 + m * 60 + s
+        except ValueError:
+            print("Invalid input, Please enter time in HH:MM:SS format") # Print error to console
+            return 0
+        
+    def start_timer(self, time_str):
+        self.time_left = self.parse_time(time_str)
+        self.running = True
+        self.update_timer()
+
+    #Update the time
+    def update_timer(self):
+        if self.running:
+            mins, secs = divmod(self.time_left, 60)
+            hours, mins = divmod(mins, 60)
+            time_str = "{:02d}:{:02d}:{:02d}".format(hours, mins, secs)
+            print(time_str) # Print time to console
+            self.time_left -= 1
+            if self.time_left == 0:
+                self.alert()
+            else:
+                time.sleep(1) # Wait for 1 second
+                self.update_timer()
+
+    #Alert function
+    def alert(self):
+        print("Time's up! Countdown finished!") # Print alert to console
+        self.stop_timer()
+
+if __name__ == "__main__":
+    timer = CountdownTimer()
+    timer.start_timer("00:00:15") # Start the timer with 15 seconds
