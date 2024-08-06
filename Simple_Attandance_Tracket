@@ -1,0 +1,46 @@
+import csv
+import datetime
+
+attendance_data = {}
+
+def register_student(student_id, name):
+    attendance_data[student_id] = {"name": name, "attendance": []}
+
+def mark_attendance(student_id, date, present):
+    if student_id in attendance_data:
+        attendance_data[student_id]["attendance"].append({"date": date, "present": present})
+    else:
+        print("Student not found")
+
+def display_attendance(student_id):
+    if student_id in attendance_data:
+        student = attendance_data[student_id]
+        print(f"Attendance for {student['name']} (ID: {student_id}):")
+        for record in student['attendance']:
+            print(f"{record['date']}: {'Present' if record['present'] else 'Absent'}")
+        total_days = len(student['attendance'])
+        present_days = sum(1 for record in student['attendance'] if record['present'])
+        print(f"Total Days: {total_days}, Present Days: {present_days}")
+    else:
+        print("Student not found")
+
+def import_attendance_from_csv(filename):
+    try: # Handle the potential FileNotFoundError
+        with open(filename,'r') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                student_id = row['student_id']
+                date = datetime.datetime.strptime(row['date'], '%Y-%m-%d').date()
+                present = True if row['present'] == 'True' else False
+                mark_attendance(student_id, date, present)
+    except FileNotFoundError:
+        print(f"File not found: {filename}. Please check the file path.")
+
+# Example usage
+register_student("S123", "Alice")
+mark_attendance("S123", "2024-08-05", True)
+mark_attendance("S123", "2024-08-06", False)
+display_attendance("S123")
+
+# Import attendance from CSV
+import_attendance_from_csv("Attandace.csv") # Make sure the file exists in the current directory or provide the correct path
